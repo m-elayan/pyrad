@@ -254,7 +254,8 @@ class Packet(OrderedDict):
             return key
 
         attr = self.dict.attributes[key]
-        if attr.vendor and not attr.is_sub_attribute:  #sub attribute keys don't need vendor
+        # sub attribute keys don't need vendor
+        if attr.vendor and not attr.is_sub_attribute:
             return (self.dict.vendors.GetForward(attr.vendor), attr.code)
         else:
             return attr.code
@@ -402,7 +403,7 @@ class Packet(OrderedDict):
         #  resulting 16 octet MD5 hash value is stored in the Authenticator
         # field of the Accounting-Response packet.
         hash = md5_constructor(rawreply[0:4] + self.authenticator +
-                               attr  + self.secret).digest()
+                               attr + self.secret).digest()
 
         if hash != rawreply[4:20]:
             return False
@@ -536,7 +537,7 @@ class Packet(OrderedDict):
                 self.message_authenticator = True
                 self.setdefault(key, []).append(value)
             elif attribute and attribute.type == 'tlv':
-                self._PktDecodeTlvAttribute(key,value)
+                self._PktDecodeTlvAttribute(key, value)
             else:
                 self.setdefault(key, []).append(value)
 
@@ -559,7 +560,7 @@ class Packet(OrderedDict):
             self.authenticator = 16 * b'\x00'
 
         random_value = 32768 + random_generator.randrange(0, 32767)
-        result = struct.pack('!H', random_value )
+        result = struct.pack('!H', random_value)
 
         length = struct.pack("B", len(value))
         buf = length + value
@@ -579,7 +580,7 @@ class Packet(OrderedDict):
 
 class AuthPacket(Packet):
     def __init__(self, code=AccessRequest, id=None, secret=b'',
-            authenticator=None, auth_type='pap', **attributes):
+                 authenticator=None, auth_type='pap', **attributes):
         """Constructor
 
         :param code:   packet type code
@@ -828,7 +829,7 @@ class CoAPacket(Packet):
     """
 
     def __init__(self, code=CoARequest, id=None, secret=b'',
-            authenticator=None, **attributes):
+                 authenticator=None, **attributes):
         """Constructor
 
         :param dict:   RADIUS dictionary
